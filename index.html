@@ -74,6 +74,15 @@
   .gb { color: var(--muted); font-size: 0.85rem; }
   .win-pct { font-weight: 600; color: #b22234; }
 
+  /* SCHEDULE FILTER */
+  .filter-bar { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.75rem; flex-wrap: wrap; }
+  .filter-label { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); white-space: nowrap; }
+  .filter-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .chip { background: white; border: 2px solid #dde3ea; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 600; padding: 0.35rem 0.85rem; border-radius: 100px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .chip:hover { border-color: #4a90d9; color: #4a90d9; }
+  .chip.active { background: #0a1628; border-color: #0a1628; color: white; }
+  .chip.team-active { background: #b22234; border-color: #b22234; color: white; }
+
   /* SCHEDULE */
   .week-group { margin-bottom: 2rem; }
   .week-label { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.75rem; padding-bottom: 0.4rem; border-bottom: 2px solid #c8d4e0; }
@@ -81,8 +90,16 @@
   .game-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
   .game-time { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
   .game-time .gdate { font-size: 0.95rem; color: var(--text); font-weight: 600; }
-  .matchup { display: flex; align-items: center; gap: 0.75rem; font-weight: 600; flex-wrap: wrap; }
-  .vs { color: var(--muted); font-size: 0.75rem; font-weight: 400; }
+  .matchup { display: flex; flex-direction: column; gap: 0.3rem; }
+  .matchup-team { display: flex; align-items: center; gap: 0.6rem; }
+  .matchup-team .team-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.1rem 0.4rem; border-radius: 3px; min-width: 36px; text-align: center; }
+  .label-home { background: #0a1628; color: white; }
+  .label-away { background: #e8ecf0; color: #6b7b8e; }
+  .matchup-team .team-name-text { font-weight: 600; font-size: 0.95rem; color: var(--text); }
+  .matchup-divider { width: 1px; height: 20px; background: #e0e4e8; margin: 0 0.25rem; display: none; }
+  .vs-divider { display: flex; align-items: center; gap: 0.5rem; padding: 0 0.25rem; }
+  .vs-divider::before, .vs-divider::after { content: ''; flex: 1; height: 1px; background: #e8ecf0; }
+  .vs-divider span { font-size: 0.65rem; color: #b0bcc8; font-weight: 600; letter-spacing: 0.08em; }
   .game-meta { font-size: 0.78rem; color: var(--muted); text-align: right; white-space: nowrap; }
   .result-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; padding: 0.15rem 0.5rem; border-radius: 4px; text-transform: uppercase; display: inline-block; margin-bottom: 0.25rem; }
   .tag-final { background: #fff0f2; color: #b22234; }
@@ -96,15 +113,65 @@
   .rule-card li { font-size: 0.875rem; color: #444; line-height: 1.5; padding-left: 1rem; position: relative; }
   .rule-card li::before { content: '–'; position: absolute; left: 0; color: #4a90d9; }
 
+  /* CONTACT */
+  .contact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }
+  .contact-card { background: white; border-radius: 12px; padding: 1.75rem 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-top: 3px solid #4a90d9; display: flex; flex-direction: column; gap: 0.5rem; }
+  .contact-card .contact-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.06em; color: var(--dark); }
+  .contact-card .contact-role { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: #4a90d9; margin-bottom: 0.25rem; }
+  .contact-card .contact-detail { font-size: 0.9rem; color: #444; display: flex; align-items: center; gap: 0.5rem; }
+  .contact-card .contact-detail a { color: #b22234; text-decoration: none; font-weight: 500; }
+  .contact-card .contact-detail a:hover { text-decoration: underline; }
+
   /* FOOTER */
   footer { background: var(--dark); color: var(--muted); text-align: center; padding: 1.5rem; font-size: 0.8rem; margin-top: 4rem; border-top: 3px solid #b22234; }
   footer strong { color: #4a90d9; }
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
+    /* HEADER */
+    header { padding: 0 1rem; }
+    .logo-text { font-size: 1.15rem; }
+    .logo-sub { display: none; }
+    nav { gap: 0; }
+    nav button { padding: 0.4rem 0.5rem; font-size: 0.65rem; letter-spacing: 0; }
+
+    /* HERO */
+    .hero { padding: 2.5rem 1rem 2rem; }
     .hero-stats { gap: 1.5rem; }
-    .game-card { grid-template-columns: 90px 1fr; }
-    .game-meta { display: none; }
-    nav button { padding: 0.5rem 0.6rem; font-size: 0.7rem; }
+    .hero-stat .num { font-size: 1.6rem; }
+
+    /* SECTIONS */
+    .section { padding: 1.75rem 1rem; }
+    .section-title { font-size: 1.9rem; }
+
+    /* STANDINGS — scroll horizontally on small screens */
+    .standings-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; }
+    .standings-table { min-width: 480px; border-radius: 0; }
+    .standings-table th, .standings-table td { padding: 0.7rem 0.75rem; font-size: 0.82rem; }
+
+    /* SCHEDULE FILTER */
+    .filter-bar { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+    .filter-chips { gap: 0.4rem; }
+    .chip { font-size: 0.75rem; padding: 0.3rem 0.7rem; }
+
+    /* GAME CARDS */
+    .game-card { grid-template-columns: 1fr; gap: 0.6rem; padding: 0.9rem 1rem; }
+    .game-time { display: flex; align-items: center; gap: 0.75rem; }
+    .game-time .gdate { font-size: 0.9rem; }
+    .game-meta { text-align: left; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .game-meta br { display: none; }
+    .matchup-team .team-name-text { font-size: 0.88rem; }
+
+    /* RULES */
+    .rules-grid { grid-template-columns: 1fr; }
+
+    /* CONTACT */
+    .contact-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 400px) {
+    nav button { padding: 0.35rem 0.4rem; font-size: 0.6rem; }
+    .logo-icon { width: 28px; height: 28px; }
+    .logo-text { font-size: 1rem; }
   }
 </style>
 </head>
@@ -128,6 +195,7 @@
       <button onclick="showPage('standings')">Standings</button>
       <button onclick="showPage('schedule')">Schedule</button>
       <button onclick="showPage('rules')">Rules</button>
+      <button onclick="showPage('contact')">Contact</button>
     </nav>
   </div>
 </header>
@@ -157,7 +225,9 @@
   <div class="section">
     <div class="section-title">Standings</div>
     <div class="section-sub">Updated after each Sunday · 2026 Regular Season</div>
-    <div id="standings-content"><div class="loading"><div class="spinner"></div> Loading standings…</div></div>
+    <div class="standings-wrapper">
+      <div id="standings-content"><div class="loading"><div class="spinner"></div> Loading standings…</div></div>
+    </div>
     <p style="margin-top:1rem; font-size:0.78rem; color:var(--muted);">RS = Runs Scored · RA = Runs Allowed · GB = Games Behind</p>
   </div>
 </div>
@@ -167,6 +237,10 @@
   <div class="section">
     <div class="section-title">Schedule</div>
     <div class="section-sub">2026 Regular Season · Sundays · <a href="https://maps.google.com/?q=490+Chalet+Drive,+Millersville,+MD+21108" target="_blank" style="color:#4a90d9;">📍 490 Chalet Drive, Millersville, MD 21108</a></div>
+    <div class="filter-bar">
+      <span class="filter-label">Filter by team:</span>
+      <div class="filter-chips" id="team-filter-chips"></div>
+    </div>
     <div id="schedule-content"><div class="loading"><div class="spinner"></div> Loading schedule…</div></div>
   </div>
 </div>
@@ -180,6 +254,15 @@
   </div>
 </div>
 
+<!-- CONTACT -->
+<div id="page-contact" class="page">
+  <div class="section">
+    <div class="section-title">Contact Us</div>
+    <div class="section-sub">Questions? Reach out to one of the Barlowe Softball League commissioners</div>
+    <div id="contact-content"><div class="loading"><div class="spinner"></div> Loading contacts…</div></div>
+  </div>
+</div>
+
 <footer>
   <strong>Barlowe Softball League</strong> · 2026 Season · Sundays<br>
   <span style="margin-top:0.4rem; display:inline-block;">📍 <a href="https://maps.google.com/?q=490+Chalet+Drive,+Millersville,+MD+21108" target="_blank" style="color:var(--muted); text-decoration:underline;">490 Chalet Drive, Millersville, MD 21108</a></span>
@@ -189,13 +272,13 @@
   const SHEET_ID = '1tZxzfFOa6ICnZlDBEkpwLcY4DKSroBAOBYjvV0YPTT8';
   const BASE_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv&sheet=';
 
-  const loaded = { standings: false, schedule: false, rules: false };
+  const loaded = { standings: false, schedule: false, rules: false, contact: false };
 
   function showPage(name) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
     document.getElementById('page-' + name).classList.add('active');
-    const map = { home: 0, standings: 1, schedule: 2, rules: 3 };
+    const map = { home: 0, standings: 1, schedule: 2, rules: 3, contact: 4 };
     document.querySelectorAll('nav button')[map[name]].classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (name !== 'home' && !loaded[name]) loadSheet(name);
@@ -232,6 +315,7 @@
       if (name === 'standings') await renderStandings();
       if (name === 'schedule')  await renderSchedule();
       if (name === 'rules')     await renderRules();
+      if (name === 'contact')   await renderContact();
     } catch (e) {
       document.getElementById(name + '-content').innerHTML =
         '<div class="error-msg">⚠️ Could not load data. Make sure the Google Sheet is shared as "Anyone with the link can view."<br><br><small>' + e.message + '</small></div>';
@@ -278,6 +362,9 @@
     el.innerHTML = html;
   }
 
+  let allScheduleGames = [];
+  let activeTeamFilter = 'all';
+
   async function renderSchedule() {
     const rows = await fetchSheet('Schedule');
     const el = document.getElementById('schedule-content');
@@ -287,11 +374,50 @@
       return;
     }
 
+    allScheduleGames = data.map(r => ({
+      date: r[0]||'TBD', time: r[1]||'TBD',
+      home: r[2]||'', away: r[3]||'', result: r[4]||''
+    }));
+
+    // Build team list from all games
+    const teams = ['all', ...new Set(allScheduleGames.flatMap(g => [g.home, g.away]).filter(Boolean))].sort((a,b) => a==='all'?-1:a.localeCompare(b));
+
+    // Build filter chips
+    const chipsEl = document.getElementById('team-filter-chips');
+    chipsEl.innerHTML = teams.map(t =>
+      `<button class="chip ${t==='all'?'active':''}" onclick="filterSchedule('${t}')">${t==='all'?'All Teams':t}</button>`
+    ).join('');
+
+    renderFilteredSchedule();
+  }
+
+  function filterSchedule(team) {
+    activeTeamFilter = team;
+    // Update chip styles
+    document.querySelectorAll('.chip').forEach(c => {
+      c.classList.remove('active', 'team-active');
+      const isAll = c.textContent === 'All Teams';
+      if (team === 'all' && isAll) c.classList.add('active');
+      else if (c.textContent === team) c.classList.add('team-active');
+    });
+    renderFilteredSchedule();
+  }
+
+  function renderFilteredSchedule() {
+    const el = document.getElementById('schedule-content');
+    const games = activeTeamFilter === 'all'
+      ? allScheduleGames
+      : allScheduleGames.filter(g => g.home === activeTeamFilter || g.away === activeTeamFilter);
+
+    if (!games.length) {
+      el.innerHTML = '<p style="color:var(--muted)">No games found for this team.</p>';
+      return;
+    }
+
     const groups = {}, order = [];
-    data.forEach(r => {
-      const date = r[0]||'TBD', time = r[1]||'TBD', home = r[2]||'', away = r[3]||'', result = r[4]||'';
-      if (!groups[date]) { groups[date] = []; order.push(date); }
-      groups[date].push({ date, time, home, away, result });
+    games.forEach(g => {
+      if (!groups[g.date]) { groups[g.date] = []; order.push(g.date); }
+      groups[g.date].push(g);
     });
 
     let html = '';
@@ -299,9 +425,21 @@
       html += '<div class="week-group"><div class="week-label">' + date + '</div>';
       groups[date].forEach(g => {
         const final = g.result && g.result.toLowerCase().includes('final');
+        const highlightHome = activeTeamFilter !== 'all' && g.home === activeTeamFilter;
+        const highlightAway = activeTeamFilter !== 'all' && g.away === activeTeamFilter;
         html += `<div class="game-card">
           <div class="game-time"><div class="gdate">${g.date}</div>${g.time}</div>
-          <div class="matchup">${g.home} <span class="vs">vs</span> ${g.away}</div>
+          <div class="matchup">
+            <div class="matchup-team">
+              <span class="team-label label-home">Home</span>
+              <span class="team-name-text" style="${highlightHome?'color:#b22234;':''}">${g.home}</span>
+            </div>
+            <div class="vs-divider"><span>vs</span></div>
+            <div class="matchup-team">
+              <span class="team-label label-away">Away</span>
+              <span class="team-name-text" style="${highlightAway?'color:#b22234;':''}">${g.away}</span>
+            </div>
+          </div>
           <div class="game-meta">
             <span class="result-tag ${final?'tag-final':'tag-upcoming'}">${final?'Final':'Upcoming'}</span><br>
             <span style="font-weight:500;font-size:0.85rem;color:var(--text)">Barlowe Softball Field</span>
@@ -341,6 +479,36 @@
       html += '<div class="rule-card"><h3>' + icon + ' ' + cat + '</h3><ul>';
       cats[cat].forEach(r => { html += '<li>' + r + '</li>'; });
       html += '</ul></div>';
+    });
+    html += '</div>';
+    el.innerHTML = html;
+  }
+
+  async function renderContact() {
+    const rows = await fetchSheet('Contact');
+    const el = document.getElementById('contact-content');
+    const data = rows.slice(1).filter(r => r[0]);
+    if (!data.length) {
+      el.innerHTML = '<p style="color:var(--muted)">No contact info yet.</p>';
+      return;
+    }
+
+    let html = '<div class="contact-grid">';
+    data.forEach(r => {
+      const name  = r[0] || '';
+      const role  = r[1] || 'Commissioner';
+      const phone = r[2] || '';
+      const email = r[3] || '';
+
+      const phoneHtml = phone ? `<div class="contact-detail">📞 <a href="tel:${phone.replace(/\D/g,'')}">${phone}</a></div>` : '';
+      const emailHtml = email ? `<div class="contact-detail">✉️ <a href="mailto:${email}">${email}</a></div>` : '';
+
+      html += `<div class="contact-card">
+        <div class="contact-role">${role}</div>
+        <div class="contact-name">${name}</div>
+        ${phoneHtml}
+        ${emailHtml}
+      </div>`;
     });
     html += '</div>';
     el.innerHTML = html;
