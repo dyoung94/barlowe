@@ -81,8 +81,16 @@
   .game-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
   .game-time { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
   .game-time .gdate { font-size: 0.95rem; color: var(--text); font-weight: 600; }
-  .matchup { display: flex; align-items: center; gap: 0.75rem; font-weight: 600; flex-wrap: wrap; }
-  .vs { color: var(--muted); font-size: 0.75rem; font-weight: 400; }
+  .matchup { display: flex; flex-direction: column; gap: 0.3rem; }
+  .matchup-team { display: flex; align-items: center; gap: 0.6rem; }
+  .matchup-team .team-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.1rem 0.4rem; border-radius: 3px; min-width: 36px; text-align: center; }
+  .label-home { background: #0a1628; color: white; }
+  .label-away { background: #e8ecf0; color: #6b7b8e; }
+  .matchup-team .team-name-text { font-weight: 600; font-size: 0.95rem; color: var(--text); }
+  .matchup-divider { width: 1px; height: 20px; background: #e0e4e8; margin: 0 0.25rem; display: none; }
+  .vs-divider { display: flex; align-items: center; gap: 0.5rem; padding: 0 0.25rem; }
+  .vs-divider::before, .vs-divider::after { content: ''; flex: 1; height: 1px; background: #e8ecf0; }
+  .vs-divider span { font-size: 0.65rem; color: #b0bcc8; font-weight: 600; letter-spacing: 0.08em; }
   .game-meta { font-size: 0.78rem; color: var(--muted); text-align: right; white-space: nowrap; }
   .result-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; padding: 0.15rem 0.5rem; border-radius: 4px; text-transform: uppercase; display: inline-block; margin-bottom: 0.25rem; }
   .tag-final { background: #fff0f2; color: #b22234; }
@@ -321,7 +329,17 @@
         const final = g.result && g.result.toLowerCase().includes('final');
         html += `<div class="game-card">
           <div class="game-time"><div class="gdate">${g.date}</div>${g.time}</div>
-          <div class="matchup">${g.home} <span class="vs">vs</span> ${g.away}</div>
+          <div class="matchup">
+            <div class="matchup-team">
+              <span class="team-label label-home">Home</span>
+              <span class="team-name-text">${g.home}</span>
+            </div>
+            <div class="vs-divider"><span>vs</span></div>
+            <div class="matchup-team">
+              <span class="team-label label-away">Away</span>
+              <span class="team-name-text">${g.away}</span>
+            </div>
+          </div>
           <div class="game-meta">
             <span class="result-tag ${final?'tag-final':'tag-upcoming'}">${final?'Final':'Upcoming'}</span><br>
             <span style="font-weight:500;font-size:0.85rem;color:var(--text)">Barlowe Softball Field</span>
