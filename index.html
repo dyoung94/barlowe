@@ -274,15 +274,6 @@
 
   const loaded = { standings: false, schedule: false, rules: false, contact: false };
 
-  function showPage(name) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-    document.getElementById('page-' + name).classList.add('active');
-    const map = { home: 0, standings: 1, schedule: 2, rules: 3, contact: 4 };
-    document.querySelectorAll('nav button')[map[name]].classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    if (name !== 'home' && !loaded[name]) loadSheet(name);
-  }
 
   function parseCSV(text) {
     const rows = [];
@@ -514,33 +505,32 @@
     el.innerHTML = html;
   }
 
-  // URL routing — read path and hash on load, update URL when navigating
-  function getPageFromURL() {
-    const path = window.location.pathname.replace(/\//g, '').toLowerCase();
-    const hash = window.location.hash.replace('#', '').toLowerCase();
-    const valid = ['home', 'standings', 'schedule', 'rules', 'contact'];
-    if (valid.includes(path)) return path;
-    if (valid.includes(hash)) return hash;
-    return 'home';
-  }
-
-  const _showPage = showPage;
+  // Core navigation — switches pages and loads data
   function showPage(name) {
-    _showPage(name);
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    const map = { home: 0, standings: 1, schedule: 2, rules: 3, contact: 4 };
+    document.querySelectorAll('nav button')[map[name]].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (name !== 'home' && !loaded[name]) loadSheet(name);
+    // Update URL
     const url = name === 'home' ? '/' : '/' + name;
     window.history.pushState({ page: name }, '', url);
   }
 
+  // Handle browser back/forward buttons
   window.addEventListener('popstate', e => {
-    const page = (e.state && e.state.page) ? e.state.page : getPageFromURL();
-    _showPage(page);
+    const page = (e.state && e.state.page) ? e.state.page : 'home';
+    showPage(page);
   });
 
+  // On first load, check URL for direct links
   window.addEventListener('load', () => {
-    const page = getPageFromURL();
-    _showPage(page);
-    if (page !== 'home') loadSheet(page);
-    loadSheet('standings');
+    const path = window.location.pathname.replace(/\//g, '').toLowerCase();
+    const valid = ['standings', 'schedule', 'rules', 'contact'];
+    const page = valid.includes(path) ? path : 'home';
+    showPage(page);
   });
 </script>
 </body>
