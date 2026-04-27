@@ -514,8 +514,34 @@
     el.innerHTML = html;
   }
 
-  // Load standings right away since it's the most visited page
-  window.addEventListener('load', () => loadSheet('standings'));
+  // URL routing — read path and hash on load, update URL when navigating
+  function getPageFromURL() {
+    const path = window.location.pathname.replace(/\//g, '').toLowerCase();
+    const hash = window.location.hash.replace('#', '').toLowerCase();
+    const valid = ['home', 'standings', 'schedule', 'rules', 'contact'];
+    if (valid.includes(path)) return path;
+    if (valid.includes(hash)) return hash;
+    return 'home';
+  }
+
+  const _showPage = showPage;
+  function showPage(name) {
+    _showPage(name);
+    const url = name === 'home' ? '/' : '/' + name;
+    window.history.pushState({ page: name }, '', url);
+  }
+
+  window.addEventListener('popstate', e => {
+    const page = (e.state && e.state.page) ? e.state.page : getPageFromURL();
+    _showPage(page);
+  });
+
+  window.addEventListener('load', () => {
+    const page = getPageFromURL();
+    _showPage(page);
+    if (page !== 'home') loadSheet(page);
+    loadSheet('standings');
+  });
 </script>
 </body>
 </html>
