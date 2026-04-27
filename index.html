@@ -96,6 +96,15 @@
   .rule-card li { font-size: 0.875rem; color: #444; line-height: 1.5; padding-left: 1rem; position: relative; }
   .rule-card li::before { content: '–'; position: absolute; left: 0; color: #4a90d9; }
 
+  /* CONTACT */
+  .contact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }
+  .contact-card { background: white; border-radius: 12px; padding: 1.75rem 1.5rem; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-top: 3px solid #4a90d9; display: flex; flex-direction: column; gap: 0.5rem; }
+  .contact-card .contact-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.06em; color: var(--dark); }
+  .contact-card .contact-role { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: #4a90d9; margin-bottom: 0.25rem; }
+  .contact-card .contact-detail { font-size: 0.9rem; color: #444; display: flex; align-items: center; gap: 0.5rem; }
+  .contact-card .contact-detail a { color: #b22234; text-decoration: none; font-weight: 500; }
+  .contact-card .contact-detail a:hover { text-decoration: underline; }
+
   /* FOOTER */
   footer { background: var(--dark); color: var(--muted); text-align: center; padding: 1.5rem; font-size: 0.8rem; margin-top: 4rem; border-top: 3px solid #b22234; }
   footer strong { color: #4a90d9; }
@@ -128,6 +137,7 @@
       <button onclick="showPage('standings')">Standings</button>
       <button onclick="showPage('schedule')">Schedule</button>
       <button onclick="showPage('rules')">Rules</button>
+      <button onclick="showPage('contact')">Contact</button>
     </nav>
   </div>
 </header>
@@ -180,6 +190,15 @@
   </div>
 </div>
 
+<!-- CONTACT -->
+<div id="page-contact" class="page">
+  <div class="section">
+    <div class="section-title">Contact Us</div>
+    <div class="section-sub">Questions? Reach out to one of the Barlowe Softball League commissioners</div>
+    <div id="contact-content"><div class="loading"><div class="spinner"></div> Loading contacts…</div></div>
+  </div>
+</div>
+
 <footer>
   <strong>Barlowe Softball League</strong> · 2026 Season · Sundays<br>
   <span style="margin-top:0.4rem; display:inline-block;">📍 <a href="https://maps.google.com/?q=490+Chalet+Drive,+Millersville,+MD+21108" target="_blank" style="color:var(--muted); text-decoration:underline;">490 Chalet Drive, Millersville, MD 21108</a></span>
@@ -189,13 +208,13 @@
   const SHEET_ID = '1tZxzfFOa6ICnZlDBEkpwLcY4DKSroBAOBYjvV0YPTT8';
   const BASE_URL = 'https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv&sheet=';
 
-  const loaded = { standings: false, schedule: false, rules: false };
+  const loaded = { standings: false, schedule: false, rules: false, contact: false };
 
   function showPage(name) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
     document.getElementById('page-' + name).classList.add('active');
-    const map = { home: 0, standings: 1, schedule: 2, rules: 3 };
+    const map = { home: 0, standings: 1, schedule: 2, rules: 3, contact: 4 };
     document.querySelectorAll('nav button')[map[name]].classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (name !== 'home' && !loaded[name]) loadSheet(name);
@@ -232,6 +251,7 @@
       if (name === 'standings') await renderStandings();
       if (name === 'schedule')  await renderSchedule();
       if (name === 'rules')     await renderRules();
+      if (name === 'contact')   await renderContact();
     } catch (e) {
       document.getElementById(name + '-content').innerHTML =
         '<div class="error-msg">⚠️ Could not load data. Make sure the Google Sheet is shared as "Anyone with the link can view."<br><br><small>' + e.message + '</small></div>';
@@ -341,6 +361,36 @@
       html += '<div class="rule-card"><h3>' + icon + ' ' + cat + '</h3><ul>';
       cats[cat].forEach(r => { html += '<li>' + r + '</li>'; });
       html += '</ul></div>';
+    });
+    html += '</div>';
+    el.innerHTML = html;
+  }
+
+  async function renderContact() {
+    const rows = await fetchSheet('Contact');
+    const el = document.getElementById('contact-content');
+    const data = rows.slice(1).filter(r => r[0]);
+    if (!data.length) {
+      el.innerHTML = '<p style="color:var(--muted)">No contact info yet.</p>';
+      return;
+    }
+
+    let html = '<div class="contact-grid">';
+    data.forEach(r => {
+      const name  = r[0] || '';
+      const role  = r[1] || 'Commissioner';
+      const phone = r[2] || '';
+      const email = r[3] || '';
+
+      const phoneHtml = phone ? `<div class="contact-detail">📞 <a href="tel:${phone.replace(/\D/g,'')}">${phone}</a></div>` : '';
+      const emailHtml = email ? `<div class="contact-detail">✉️ <a href="mailto:${email}">${email}</a></div>` : '';
+
+      html += `<div class="contact-card">
+        <div class="contact-role">${role}</div>
+        <div class="contact-name">${name}</div>
+        ${phoneHtml}
+        ${emailHtml}
+      </div>`;
     });
     html += '</div>';
     el.innerHTML = html;
