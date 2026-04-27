@@ -112,7 +112,7 @@
 
 <header>
   <div class="header-inner">
-    <div class="logo">
+    <div class="logo" onclick="showPage('home')" style="cursor:pointer;">
       <svg class="logo-icon" viewBox="0 0 38 38" fill="none">
         <circle cx="19" cy="19" r="18" fill="#b22234" stroke="#8a1a28" stroke-width="1.5"/>
         <path d="M10 19 Q14 12 19 19 Q24 26 28 19" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
@@ -166,7 +166,7 @@
 <div id="page-schedule" class="page">
   <div class="section">
     <div class="section-title">Schedule</div>
-    <div class="section-sub">2026 Regular Season · Barlowe Softball Field · Sundays</div>
+    <div class="section-sub">2026 Regular Season · Sundays · <a href="https://maps.google.com/?q=490+Chalet+Drive,+Millersville,+MD+21108" target="_blank" style="color:#4a90d9;">📍 490 Chalet Drive, Millersville, MD 21108</a></div>
     <div id="schedule-content"><div class="loading"><div class="spinner"></div> Loading schedule…</div></div>
   </div>
 </div>
@@ -181,7 +181,8 @@
 </div>
 
 <footer>
-  <strong>Barlowe Softball League</strong> · 2026 Season · All games at Barlowe Softball Field · Sundays
+  <strong>Barlowe Softball League</strong> · 2026 Season · Sundays<br>
+  <span style="margin-top:0.4rem; display:inline-block;">📍 <a href="https://maps.google.com/?q=490+Chalet+Drive,+Millersville,+MD+21108" target="_blank" style="color:var(--muted); text-decoration:underline;">490 Chalet Drive, Millersville, MD 21108</a></span>
 </footer>
 
 <script>
