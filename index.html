@@ -71,6 +71,8 @@
   .rank-3 { background: #d0d0d0; color: var(--dark); }
   .rank-n { background: #eee; color: var(--muted); }
   .team-name { font-weight: 600; }
+  .team-link { cursor: pointer; transition: color 0.15s; }
+  .team-link:hover { color: #b22234; text-decoration: underline; }
   .gb { color: var(--muted); font-size: 0.85rem; }
   .win-pct { font-weight: 600; color: #b22234; }
 
@@ -345,7 +347,7 @@
       const gb = ((lw - t.w) + (t.l - ll)) / 2;
       const gbHtml = i===0 ? '<span class="gb">—</span>' : '<span class="gb">'+(gb%1===0?gb:gb.toFixed(1))+'</span>';
       html += `<tr${n===1?' class="leader"':''}>
-        <td><span class="rank ${rc}">${n}</span><span class="team-name">${t.name}</span></td>
+        <td><span class="rank ${rc}">${n}</span><span class="team-name team-link" onclick="goToTeamSchedule('${t.name}')">${t.name}</span></td>
         <td>${t.w}</td><td>${t.l}</td><td>${pctHtml}</td><td>${gbHtml}</td><td>${t.rs}</td><td>${t.ra}</td>
       </tr>`;
     });
@@ -503,6 +505,17 @@
     });
     html += '</div>';
     el.innerHTML = html;
+  }
+
+  function goToTeamSchedule(teamName) {
+    showPage('schedule');
+    // Wait for schedule to load then apply filter
+    const apply = () => {
+      const chips = document.querySelectorAll('.chip');
+      if (!chips.length) { setTimeout(apply, 100); return; }
+      filterSchedule(teamName);
+    };
+    apply();
   }
 
   // Core navigation — switches pages and loads data
