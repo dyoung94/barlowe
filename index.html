@@ -74,6 +74,15 @@
   .gb { color: var(--muted); font-size: 0.85rem; }
   .win-pct { font-weight: 600; color: #b22234; }
 
+  /* SCHEDULE FILTER */
+  .filter-bar { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.75rem; flex-wrap: wrap; }
+  .filter-label { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); white-space: nowrap; }
+  .filter-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .chip { background: white; border: 2px solid #dde3ea; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 600; padding: 0.35rem 0.85rem; border-radius: 100px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .chip:hover { border-color: #4a90d9; color: #4a90d9; }
+  .chip.active { background: #0a1628; border-color: #0a1628; color: white; }
+  .chip.team-active { background: #b22234; border-color: #b22234; color: white; }
+
   /* SCHEDULE */
   .week-group { margin-bottom: 2rem; }
   .week-label { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 0.75rem; padding-bottom: 0.4rem; border-bottom: 2px solid #c8d4e0; }
@@ -185,6 +194,10 @@
   <div class="section">
     <div class="section-title">Schedule</div>
     <div class="section-sub">2026 Regular Season · Sundays · <a href="https://maps.google.com/?q=490+Chalet+Drive,+Millersville,+MD+21108" target="_blank" style="color:#4a90d9;">📍 490 Chalet Drive, Millersville, MD 21108</a></div>
+    <div class="filter-bar">
+      <span class="filter-label">Filter by team:</span>
+      <div class="filter-chips" id="team-filter-chips"></div>
+    </div>
     <div id="schedule-content"><div class="loading"><div class="spinner"></div> Loading schedule…</div></div>
   </div>
 </div>
@@ -306,6 +319,9 @@
     el.innerHTML = html;
   }
 
+  let allScheduleGames = [];
+  let activeTeamFilter = 'all';
+
   async function renderSchedule() {
     const rows = await fetchSheet('Schedule');
     const el = document.getElementById('schedule-content');
@@ -315,11 +331,50 @@
       return;
     }
 
+    allScheduleGames = data.map(r => ({
+      date: r[0]||'TBD', time: r[1]||'TBD',
+      home: r[2]||'', away: r[3]||'', result: r[4]||''
+    }));
+
+    // Build team list from all games
+    const teams = ['all', ...new Set(allScheduleGames.flatMap(g => [g.home, g.away]).filter(Boolean))].sort((a,b) => a==='all'?-1:a.localeCompare(b));
+
+    // Build filter chips
+    const chipsEl = document.getElementById('team-filter-chips');
+    chipsEl.innerHTML = teams.map(t =>
+      `<button class="chip ${t==='all'?'active':''}" onclick="filterSchedule('${t}')">${t==='all'?'All Teams':t}</button>`
+    ).join('');
+
+    renderFilteredSchedule();
+  }
+
+  function filterSchedule(team) {
+    activeTeamFilter = team;
+    // Update chip styles
+    document.querySelectorAll('.chip').forEach(c => {
+      c.classList.remove('active', 'team-active');
+      const isAll = c.textContent === 'All Teams';
+      if (team === 'all' && isAll) c.classList.add('active');
+      else if (c.textContent === team) c.classList.add('team-active');
+    });
+    renderFilteredSchedule();
+  }
+
+  function renderFilteredSchedule() {
+    const el = document.getElementById('schedule-content');
+    const games = activeTeamFilter === 'all'
+      ? allScheduleGames
+      : allScheduleGames.filter(g => g.home === activeTeamFilter || g.away === activeTeamFilter);
+
+    if (!games.length) {
+      el.innerHTML = '<p style="color:var(--muted)">No games found for this team.</p>';
+      return;
+    }
+
     const groups = {}, order = [];
-    data.forEach(r => {
-      const date = r[0]||'TBD', time = r[1]||'TBD', home = r[2]||'', away = r[3]||'', result = r[4]||'';
-      if (!groups[date]) { groups[date] = []; order.push(date); }
-      groups[date].push({ date, time, home, away, result });
+    games.forEach(g => {
+      if (!groups[g.date]) { groups[g.date] = []; order.push(g.date); }
+      groups[g.date].push(g);
     });
 
     let html = '';
@@ -327,17 +382,19 @@
       html += '<div class="week-group"><div class="week-label">' + date + '</div>';
       groups[date].forEach(g => {
         const final = g.result && g.result.toLowerCase().includes('final');
+        const highlightHome = activeTeamFilter !== 'all' && g.home === activeTeamFilter;
+        const highlightAway = activeTeamFilter !== 'all' && g.away === activeTeamFilter;
         html += `<div class="game-card">
           <div class="game-time"><div class="gdate">${g.date}</div>${g.time}</div>
           <div class="matchup">
             <div class="matchup-team">
               <span class="team-label label-home">Home</span>
-              <span class="team-name-text">${g.home}</span>
+              <span class="team-name-text" style="${highlightHome?'color:#b22234;':''}">${g.home}</span>
             </div>
             <div class="vs-divider"><span>vs</span></div>
             <div class="matchup-team">
               <span class="team-label label-away">Away</span>
-              <span class="team-name-text">${g.away}</span>
+              <span class="team-name-text" style="${highlightAway?'color:#b22234;':''}">${g.away}</span>
             </div>
           </div>
           <div class="game-meta">
